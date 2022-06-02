@@ -1,6 +1,7 @@
 package ironyang.toyproject1.service;
 
 import ironyang.toyproject1.domain.Food;
+import ironyang.toyproject1.exception.NoSuchFoodException;
 import ironyang.toyproject1.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,6 @@ public class FoodService {
 
     public Food findFood(Long foodId) {
         return foodRepository.findById(foodId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new NoSuchFoodException());
     }
 }
