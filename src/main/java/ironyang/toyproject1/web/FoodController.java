@@ -6,9 +6,7 @@ import ironyang.toyproject1.web.dto.FoodRequestDto;
 import ironyang.toyproject1.web.dto.FoodResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -27,5 +25,15 @@ public class FoodController {
         FoodResponseDto foodResponseDto = new FoodResponseDto();
         foodResponseDto.setId(savedFoodId);
         return ResponseEntity.created(URI.create("/api/foods/"+savedFoodId)).body(foodResponseDto);
+    }
+
+    @GetMapping("/api/foods/{id}")
+    public ResponseEntity<FoodResponseDto> findFood(@PathVariable Long id) {
+        Food food = foodService.findFood(id);
+        FoodResponseDto foodResponseDto = new FoodResponseDto();
+        foodResponseDto.setId(food.getId());
+        foodResponseDto.setName(food.getName());
+        foodResponseDto.setPrice(food.getPrice());
+        return ResponseEntity.ok().body(foodResponseDto);
     }
 }
