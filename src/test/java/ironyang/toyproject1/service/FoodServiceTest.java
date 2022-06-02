@@ -27,17 +27,12 @@ class FoodServiceTest {
     @Test
     void addFoodAndFindFood() {
         //given
-        Food resultFood = new Food();
-        resultFood.setId(1L);
-        resultFood.setName("떡볶이");
-        resultFood.setPrice(15_000);
+        Food resultFood = new Food("떡볶이", 15_000);
         given(foodRepository.save(any(Food.class))).willReturn(resultFood);
-        given(foodRepository.findById(1L)).willReturn(Optional.of(resultFood));
+        given(foodRepository.findById(any())).willReturn(Optional.of(resultFood));
 
         //when
-        Food paramFood = new Food();
-        paramFood.setName("떡볶이");
-        paramFood.setPrice(15_000);
+        Food paramFood = new Food("떡볶이", 15_000);
         Long savedFoodId = foodService.addFood(paramFood);
         Food foundFood = foodService.findFood(savedFoodId);
 
@@ -49,22 +44,16 @@ class FoodServiceTest {
     @Test
     void addFoodAndFindFood_NoSuchFoodException() {
         //given
-        Food resultFood = new Food();
-        resultFood.setId(1L);
-        resultFood.setName("떡볶이");
-        resultFood.setPrice(15_000);
+        Food resultFood = new Food("떡볶이", 15_000);
         given(foodRepository.save(any(Food.class))).willReturn(resultFood);
         given(foodRepository.findById(any())).willReturn(Optional.empty());
 
         //when
-        Food paramFood = new Food();
-        paramFood.setName("떡볶이");
-        paramFood.setPrice(15_000);
+        Food paramFood = new Food("떡볶이", 15_000);
         Long savedFoodId = foodService.addFood(paramFood);
 
         //then
         assertThatThrownBy(() -> foodService.findFood(1L))
                 .isInstanceOf(NoSuchFoodException.class);
     }
-
 }

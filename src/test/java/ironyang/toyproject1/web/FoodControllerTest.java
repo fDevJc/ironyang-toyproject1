@@ -53,10 +53,7 @@ class FoodControllerTest {
     void findFood() throws Exception {
         //given
         Long foodId = 1L;
-        Food resultFood = new Food();
-        resultFood.setId(1L);
-        resultFood.setName("떡볶이");
-        resultFood.setPrice(15_000);
+        Food resultFood = new Food("떡볶이", 15_000);
         given(foodService.findFood(any(Long.class))).willReturn(resultFood);
 
         System.out.println("content() = " + content());

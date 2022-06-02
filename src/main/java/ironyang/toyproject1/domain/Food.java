@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Getter @Setter
+@Getter
 @Entity
 public class Food {
 
@@ -17,4 +17,9 @@ public class Food {
     private String name;
 
     private int price;
+
+    public Food(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
 }
