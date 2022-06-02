@@ -1,6 +1,7 @@
 package ironyang.toyproject1.service;
 
 import ironyang.toyproject1.domain.Food;
+import ironyang.toyproject1.exception.NoSuchFoodException;
 import ironyang.toyproject1.repository.FoodRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -44,4 +45,26 @@ class FoodServiceTest {
         assertThat(foundFood.getName()).isEqualTo("떡볶이");
         assertThat(foundFood.getPrice()).isEqualTo(15_000);
     }
+
+    @Test
+    void addFoodAndFindFood_NoSuchFoodException() {
+        //given
+        Food resultFood = new Food();
+        resultFood.setId(1L);
+        resultFood.setName("떡볶이");
+        resultFood.setPrice(15_000);
+        given(foodRepository.save(any(Food.class))).willReturn(resultFood);
+        given(foodRepository.findById(any())).willReturn(Optional.empty());
+
+        //when
+        Food paramFood = new Food();
+        paramFood.setName("떡볶이");
+        paramFood.setPrice(15_000);
+        Long savedFoodId = foodService.addFood(paramFood);
+
+        //then
+        assertThatThrownBy(() -> foodService.findFood(1L))
+                .isInstanceOf(NoSuchFoodException.class);
+    }
+
 }
