@@ -1,6 +1,7 @@
 package ironyang.toyproject1.web;
 
 import ironyang.toyproject1.domain.Food;
+import ironyang.toyproject1.exception.NoSuchFoodException;
 import ironyang.toyproject1.service.FoodService;
 import ironyang.toyproject1.web.dto.FoodRequestDto;
 import ironyang.toyproject1.web.dto.FoodResponseDto;
@@ -17,7 +18,6 @@ public class FoodController {
 
     @PostMapping("/api/foods")
     public ResponseEntity<FoodResponseDto> addFood(@RequestBody FoodRequestDto foodRequestDto) {
-        System.out.println("foodRequestDto = " + foodRequestDto);
         Food food = new Food(foodRequestDto.getName(), foodRequestDto.getPrice());
         Long savedFoodId = foodService.addFood(food);
         FoodResponseDto foodResponseDto = new FoodResponseDto();
@@ -33,5 +33,10 @@ public class FoodController {
         foodResponseDto.setName(food.getName());
         foodResponseDto.setPrice(food.getPrice());
         return ResponseEntity.ok().body(foodResponseDto);
+    }
+
+    @ExceptionHandler(NoSuchFoodException.class)
+    public ResponseEntity handleNoSuchFoodException(NoSuchFoodException e) {
+        return ResponseEntity.badRequest().build();
     }
 }

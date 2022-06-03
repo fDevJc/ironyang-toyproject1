@@ -2,6 +2,7 @@ package ironyang.toyproject1.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ironyang.toyproject1.domain.Food;
+import ironyang.toyproject1.exception.NoSuchFoodException;
 import ironyang.toyproject1.service.FoodService;
 import ironyang.toyproject1.web.dto.FoodRequestDto;
 import org.junit.jupiter.api.DisplayName;
@@ -11,14 +12,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
@@ -56,13 +56,29 @@ class FoodControllerTest {
         Food resultFood = new Food("떡볶이", 15_000);
         given(foodService.findFood(any(Long.class))).willReturn(resultFood);
 
-        System.out.println("content() = " + content());
-
         //when & then
         mockMvc.perform(
                         get("/api/foods/" + foodId)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("떡볶이"))
+                .andExpect(jsonPath("$.price").value(15_000))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("음식 조회에 실패한다")
+    void findFood_NoSuchFoodException() throws Exception {
+        //given
+        Long foodId = 1L;
+        Food resultFood = new Food("떡볶이", 15_000);
+        given(foodService.findFood(any(Long.class))).willThrow(NoSuchFoodException.class);
+
+        //when & then
+        mockMvc.perform(
+                        get("/api/foods/" + foodId)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 }
