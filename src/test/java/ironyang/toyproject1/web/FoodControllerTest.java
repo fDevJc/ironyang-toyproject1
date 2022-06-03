@@ -33,7 +33,9 @@ class FoodControllerTest {
     void addFood() throws Exception {
         //given
         given(foodService.addFood(any(Food.class))).willReturn(1L);
+
         ObjectMapper objectMapper = new ObjectMapper();
+
         FoodRequestDto foodRequestDto = new FoodRequestDto();
         foodRequestDto.setName("떡볶이");
         foodRequestDto.setPrice(15_000);
@@ -53,7 +55,7 @@ class FoodControllerTest {
     void findFood() throws Exception {
         //given
         Long foodId = 1L;
-        Food resultFood = Food.builder()
+         Food resultFood = Food.builder()
                 .name("떡볶이")
                 .price(15_000)
                 .build();
@@ -73,16 +75,12 @@ class FoodControllerTest {
     @DisplayName("음식 조회에 실패한다")
     void findFood_NoSuchFoodException() throws Exception {
         //given
-        Long foodId = 1L;
-        Food resultFood = Food.builder()
-                .name("떡볶이")
-                .price(15_000)
-                .build();
-        given(foodService.findFood(any(Long.class))).willThrow(NoSuchFoodException.class);
+        Long notExistFoodId = 9999L;
+        given(foodService.findFood(any())).willThrow(NoSuchFoodException.class);
 
         //when & then
         mockMvc.perform(
-                        get("/api/foods/" + foodId)
+                        get("/api/foods/" + notExistFoodId)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(print());

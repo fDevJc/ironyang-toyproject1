@@ -3,7 +3,7 @@ package ironyang.toyproject1.service;
 import ironyang.toyproject1.domain.Food;
 import ironyang.toyproject1.exception.NoSuchFoodException;
 import ironyang.toyproject1.repository.FoodRepository;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -24,49 +24,39 @@ class FoodServiceTest {
     @InjectMocks
     FoodService foodService;
 
+    Food food;
+
+    @BeforeEach
+    void setUp() {
+        food = Food.builder()
+                .name("떡볶이")
+                .price(15_000)
+                .build();
+    }
+
     @Test
     void addFoodAndFindFood() {
         //given
-        Food resultFood = Food.builder()
-                .name("떡볶이")
-                .price(15_000)
-                .build();
-
-        given(foodRepository.save(any(Food.class))).willReturn(resultFood);
-        given(foodRepository.findById(any())).willReturn(Optional.of(resultFood));
+        given(foodRepository.save(any(Food.class))).willReturn(food);
+        given(foodRepository.findById(any())).willReturn(Optional.of(food));
 
         //when
-        Food paramFood = Food.builder()
-                .name("떡볶이")
-                .price(15_000)
-                .build();
-        Long savedFoodId = foodService.addFood(paramFood);
+        Long savedFoodId = foodService.addFood(food);
         Food foundFood = foodService.findFood(savedFoodId);
 
         //then
-        assertThat(foundFood.getName()).isEqualTo("떡볶이");
-        assertThat(foundFood.getPrice()).isEqualTo(15_000);
+        assertThat(foundFood.getName()).isEqualTo(food.getName());
+        assertThat(foundFood.getPrice()).isEqualTo(food.getPrice());
     }
 
     @Test
     void addFoodAndFindFood_NoSuchFoodException() {
         //given
-        Food resultFood = Food.builder()
-                .name("떡볶이")
-                .price(15_000)
-                .build();
-        given(foodRepository.save(any(Food.class))).willReturn(resultFood);
+        Long notExistFoodId = 9999L;
         given(foodRepository.findById(any())).willReturn(Optional.empty());
 
-        //when
-        Food paramFood = Food.builder()
-                .name("떡볶이")
-                .price(15_000)
-                .build();
-        Long savedFoodId = foodService.addFood(paramFood);
-
-        //then
-        assertThatThrownBy(() -> foodService.findFood(1L))
+        //when & then
+        assertThatThrownBy(() -> foodService.findFood(notExistFoodId))
                 .isInstanceOf(NoSuchFoodException.class);
     }
 }
