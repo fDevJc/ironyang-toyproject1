@@ -6,10 +6,9 @@ import ironyang.toyproject1.service.FoodService;
 import ironyang.toyproject1.web.dto.FoodRequestDto;
 import ironyang.toyproject1.web.dto.FoodResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,21 +17,13 @@ public class FoodController {
 
     @PostMapping("/api/foods")
     public ResponseEntity<FoodResponseDto> addFood(@RequestBody FoodRequestDto foodRequestDto) {
-        Food food = foodRequestDto.toEntity();
-        Long savedFoodId = foodService.addFood(food);
-        FoodResponseDto foodResponseDto = new FoodResponseDto();
-        foodResponseDto.setId(savedFoodId);
-        return ResponseEntity.created(URI.create("/api/foods/"+savedFoodId)).body(foodResponseDto);
+        foodService.addFood(foodRequestDto.toEntity());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/api/foods/{id}")
     public ResponseEntity<FoodResponseDto> findFood(@PathVariable Long id) {
-        Food food = foodService.findFood(id);
-        FoodResponseDto foodResponseDto = new FoodResponseDto();
-        foodResponseDto.setId(food.getId());
-        foodResponseDto.setName(food.getName());
-        foodResponseDto.setPrice(food.getPrice());
-        return ResponseEntity.ok().body(foodResponseDto);
+        return ResponseEntity.ok().body(FoodResponseDto.of(foodService.findFood(id)));
     }
 
     @ExceptionHandler(NoSuchFoodException.class)
