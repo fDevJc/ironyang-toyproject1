@@ -18,7 +18,10 @@ public class FoodController {
 
     @PostMapping("/api/foods")
     public ResponseEntity<FoodResponseDto> addFood(@RequestBody FoodRequestDto foodRequestDto) {
-        Food food = new Food(foodRequestDto.getName(), foodRequestDto.getPrice());
+        Food food = Food.builder()
+                .name(foodRequestDto.getName())
+                .price(foodRequestDto.getPrice())
+                .build();
         Long savedFoodId = foodService.addFood(food);
         FoodResponseDto foodResponseDto = new FoodResponseDto();
         foodResponseDto.setId(savedFoodId);

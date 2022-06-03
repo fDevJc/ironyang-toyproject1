@@ -53,7 +53,10 @@ class FoodControllerTest {
     void findFood() throws Exception {
         //given
         Long foodId = 1L;
-        Food resultFood = new Food("떡볶이", 15_000);
+        Food resultFood = Food.builder()
+                .name("떡볶이")
+                .price(15_000)
+                .build();
         given(foodService.findFood(any(Long.class))).willReturn(resultFood);
 
         //when & then
@@ -71,7 +74,10 @@ class FoodControllerTest {
     void findFood_NoSuchFoodException() throws Exception {
         //given
         Long foodId = 1L;
-        Food resultFood = new Food("떡볶이", 15_000);
+        Food resultFood = Food.builder()
+                .name("떡볶이")
+                .price(15_000)
+                .build();
         given(foodService.findFood(any(Long.class))).willThrow(NoSuchFoodException.class);
 
         //when & then

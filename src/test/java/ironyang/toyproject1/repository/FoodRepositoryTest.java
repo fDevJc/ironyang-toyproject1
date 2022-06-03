@@ -19,7 +19,10 @@ class FoodRepositoryTest {
     @Test
     void foodSaveAndFind() {
         //given
-        Food food = new Food("떡볶이", 15_000);
+        Food food = Food.builder()
+                .name("떡볶이")
+                .price(15_000)
+                .build();
         //when
         foodRepository.save(food);
         Optional<Food> optionalFood = foodRepository.findById(food.getId());

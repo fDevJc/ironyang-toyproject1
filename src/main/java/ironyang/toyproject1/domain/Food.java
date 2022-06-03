@@ -1,5 +1,6 @@
 package ironyang.toyproject1.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +19,8 @@ public class Food {
 
     private int price;
 
-    public Food(String name, int price) {
+    @Builder
+    private Food(String name, int price) {
         this.name = name;
         this.price = price;
     }

@@ -27,12 +27,19 @@ class FoodServiceTest {
     @Test
     void addFoodAndFindFood() {
         //given
-        Food resultFood = new Food("떡볶이", 15_000);
+        Food resultFood = Food.builder()
+                .name("떡볶이")
+                .price(15_000)
+                .build();
+
         given(foodRepository.save(any(Food.class))).willReturn(resultFood);
         given(foodRepository.findById(any())).willReturn(Optional.of(resultFood));
 
         //when
-        Food paramFood = new Food("떡볶이", 15_000);
+        Food paramFood = Food.builder()
+                .name("떡볶이")
+                .price(15_000)
+                .build();
         Long savedFoodId = foodService.addFood(paramFood);
         Food foundFood = foodService.findFood(savedFoodId);
 
@@ -44,12 +51,18 @@ class FoodServiceTest {
     @Test
     void addFoodAndFindFood_NoSuchFoodException() {
         //given
-        Food resultFood = new Food("떡볶이", 15_000);
+        Food resultFood = Food.builder()
+                .name("떡볶이")
+                .price(15_000)
+                .build();
         given(foodRepository.save(any(Food.class))).willReturn(resultFood);
         given(foodRepository.findById(any())).willReturn(Optional.empty());
 
         //when
-        Food paramFood = new Food("떡볶이", 15_000);
+        Food paramFood = Food.builder()
+                .name("떡볶이")
+                .price(15_000)
+                .build();
         Long savedFoodId = foodService.addFood(paramFood);
 
         //then
