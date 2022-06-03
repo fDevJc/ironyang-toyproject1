@@ -23,9 +23,10 @@ class FoodRepositoryTest {
                 .build();
         //when
         foodRepository.save(food);
-        Optional<Food> optionalFood = foodRepository.findById(food.getId());
+        Food foundFood = foodRepository.findById(food.getId()).get();
+
         //then
-        assertThat(optionalFood.get().getName()).isEqualTo("떡볶이");
-        assertThat(optionalFood.get().getPrice()).isEqualTo(15_000);
+        assertThat(foundFood.getName()).isEqualTo(food.getName());
+        assertThat(foundFood.getPrice()).isEqualTo(food.getPrice());
     }
 }
