@@ -4,12 +4,15 @@ import ironyang.toyproject1.domain.Food;
 import ironyang.toyproject1.exception.NoSuchFoodException;
 import ironyang.toyproject1.repository.FoodRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +22,9 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class FoodServiceTest {
+    @Autowired
+    EntityManager em;
+
     @Mock
     FoodRepository foodRepository;
     @InjectMocks
@@ -58,5 +64,22 @@ class FoodServiceTest {
         //when & then
         assertThatThrownBy(() -> foodService.findFood(notExistFoodId))
                 .isInstanceOf(NoSuchFoodException.class);
+    }
+
+    @Test
+    @DisplayName("상품을 수정한다")
+    void updateFood() {
+        //given
+        Long anyId = 1L;
+        given(foodRepository.findById(any())).willReturn(Optional.of(food));
+
+        //when
+        Food updateFood = Food.builder()
+                .name("불맛 떡볶이")
+                .build();
+        foodService.updateFood(anyId, updateFood);
+        
+        //then
+        assertThat(food.getName()).isEqualTo(updateFood.getName());
     }
 }

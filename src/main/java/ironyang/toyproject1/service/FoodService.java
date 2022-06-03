@@ -22,4 +22,11 @@ public class FoodService {
         return foodRepository.findById(foodId)
                 .orElseThrow(() -> new NoSuchFoodException());
     }
+
+    @Transactional
+    public Long updateFood(Long id, Food food) {
+        Food foundFood = findFood(id);
+        foundFood.update(food);
+        return foundFood.getId();
+    }
 }
