@@ -1,5 +1,7 @@
 package ironyang.toyproject1.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ironyang.toyproject1.web.dto.UserRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,14 +23,19 @@ class UserControllerTest {
     @Test
     void join() throws Exception {
         //given
-        UserRequestDto userRequestDto = new UserRequestDto();
+        UserRequestDto userRequestDto = UserRequestDto.builder()
+                .email("email@iron.com")
+                .password("password")
+                .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
         //when & then
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("")
+                        .content(objectMapper.writeValueAsString(userRequestDto))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
-
     }
 }
