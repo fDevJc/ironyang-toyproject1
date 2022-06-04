@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ironyang.toyproject1.domain.Food;
 import ironyang.toyproject1.exception.NoSuchFoodException;
 import ironyang.toyproject1.service.FoodService;
+import ironyang.toyproject1.service.UserService;
 import ironyang.toyproject1.web.dto.FoodRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(FoodController.class)
 class FoodControllerTest {
     @MockBean
     FoodService foodService;
